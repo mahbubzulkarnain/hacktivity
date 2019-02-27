@@ -2,12 +2,39 @@
 <html lang="en">
 <%- include('../../partials/header.ejs') %>
 <body>
-<%- include('../../partials/navbar/article.ejs') %>
-<% if (prop) { %>
-    <h2><%= prop.title %></h2>
-    <h4><%= prop.subheading %></h4>
-    <p><%- prop.content %></p>
-<% } %>
+<div class="container">
+    <%- include('../../partials/navbar.ejs') %>
+    <% if (prop && user && prop.authorId === user.id){ %>
+        <div class="float-right">
+            <a onclick="swalClicked('<%= prop.slug %>')" class="btn btn-danger" style="color: white;">Destroy</a>
+            <a href="/article/destroy/<%= prop.slug %>" class="btn btn-info">Edit</a>
+        </div>
+    <% } %>
+    <div>
+        <% if (prop) { %>
+            <h1><%= prop.title %></h1>
+            <h4><%= prop.subheading %></h4>
+            <p><%- prop.content %></p>
+        <% } %>
+    </div>
+</div>
 <%- include('../../partials/footer.ejs') %>
+<script src="/swal/sweetalert.min.js"></script>
+<script type="text/javascript">
+    function swalClicked(id) {
+        swal('Are you sure ?', {
+            dangerMode: true,
+            buttons: ['Cancel', 'Delete'],
+        })
+            .then(function (yes) {
+                if (yes) {
+                    window.location = `/article/destroy/${id}`
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+</script>
 </body>
 </html>

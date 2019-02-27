@@ -3,7 +3,7 @@ const {setLogin} = require('../helpers/auth');
 const url = require('url');
 const bcrypt = require('bcrypt');
 
-class AuthController {
+class HomeController {
     static registerForm(req, res) {
         res.render('pages/auth/register')
     }
@@ -99,6 +99,7 @@ class AuthController {
                         res.locals.isLogin = true;
                         res.locals.user = {
                             id: user.id,
+                            fullName: user.fullname(),
                             firstName: user.firstName,
                             lastName: user.lastName,
                             username: user.username
@@ -128,4 +129,4 @@ class AuthController {
     }
 }
 
-module.exports = AuthController;
+module.exports = HomeController;

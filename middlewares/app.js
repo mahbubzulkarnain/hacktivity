@@ -1,10 +1,11 @@
 const router = (require('express')).Router();
-const Auth = require('../controllers/AuthController');
+const Home = require('../controllers/HomeController');
 
 router
-    .use(Auth.checkLoginMiddleware)
+    .use(Home.checkLoginMiddleware)
     .use((req, res, next) => {
         res.locals.htmlEntities = require('../helpers/htmlEntities');
+        res.locals.timeAgo = require('../helpers/timeAgo');
         next()
     });
 

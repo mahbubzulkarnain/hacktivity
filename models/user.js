@@ -63,5 +63,8 @@ module.exports = (sequelize, DataTypes) => {
     User.associate = function (models) {
         // associations can be defined here
     };
+    User.prototype.fullname = function () {
+        return this.firstName + ' ' + this.lastName;
+    };
     return User;
 };

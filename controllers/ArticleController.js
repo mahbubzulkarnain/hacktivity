@@ -10,7 +10,7 @@ class ArticleController {
         })
             .then((props) => {
                 props.map(item => {
-                    item.content = marked(item.content.substring(0, 200)+'...')
+                    item.content = marked(item.content.substring(0, 200) + '...')
                 });
                 res.render('pages/article/list', {props})
             })
@@ -34,12 +34,38 @@ class ArticleController {
             .catch(next)
     }
 
-    static updateForm(req, res, next) {
-        res.render('pages/article/update')
+    static updateForm({params}, res, next) {
+        Article.findOne({
+            where: {
+                slug: params.slug,
+                authorId: res.locals.user.id
+            }
+        })
+            .then((prop) => {
+                if (!prop) next('Not found');
+                res.render('pages/article/update', {prop})
+            })
+            .catch(next)
     }
 
-    static updatePost(req, res, next) {
-        res.send('updatePost');
+    static updatePost({params, body}, res, next) {
+        Article.findOne({
+            where: {
+                slug: params.slug,
+                authorId: res.locals.user.id
+            }
+        })
+            .then((article) => {
+                return article.update({
+                    title: body.title,
+                    subheading: body.subheading,
+                    content: body.content,
+                })
+            })
+            .then(() => {
+                res.redirect(`/article/view/${params.slug}`)
+            })
+            .catch(next)
     }
 
     static view({params}, res, next) {
@@ -61,8 +87,23 @@ class ArticleController {
             })
     }
 
-    static destroy(req, res, next) {
-        res.send('destroy')
+    static destroy({params}, res, next) {
+        Article.findOne({
+            where: {
+                slug: params.slug,
+                authorId: res.locals.user.id
+            }
+        })
+            .then((article) => {
+                return article.destroy()
+            })
+            .then(() => {
+                res.redirect('/article')
+            })
+            .catch((err) => {
+                console.log(err);
+                res.redirect(`/article/view/${params.slug}`)
+            })
     }
 }
 
