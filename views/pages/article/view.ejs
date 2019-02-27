@@ -7,7 +7,7 @@
     <% if (prop && user && prop.authorId === user.id){ %>
         <div class="float-right">
             <a onclick="swalClicked('<%= prop.slug %>')" class="btn btn-danger" style="color: white;">Destroy</a>
-            <a href="/article/destroy/<%= prop.slug %>" class="btn btn-info">Edit</a>
+            <a href="/article/edit/<%= prop.slug %>" class="btn btn-info">Edit</a>
         </div>
     <% } %>
     <div>
