@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<%- include('../../partials/header.ejs') %>
+<body>
+<%- include('../../partials/navbar/article.ejs') %>
+<div class="container">
+    <% if (props && props.length > 0) { props.forEach(item=>{ %>
+        <a href="/article/view/<%= item.slug %>" style="color:black;">
+            <div class="card" style="margin-bottom: 10px">
+                <div class="card-body">
+                    <h3 class="card-title"><%= item.title %></h3>
+                    <h6 class="card-subtitle"><%= item.subheading %></h6>
+                    <p><%- item.content %></p>
+                    <small><%= new Date(item.createdAt).getFullYear() %></small> /
+                    <small style="font-weight: bold"><%= item.User.firstName + ' ' + item.User.lastName %></small>
+                </div>
+            </div>
+        </a>
+    <% })} %>
+</div>
+<%- include('../../partials/footer.ejs') %>
+<style type="text/css">
+    a:hover {
+        text-decoration: none;
+    }
+</style>
+</body>
+</html>

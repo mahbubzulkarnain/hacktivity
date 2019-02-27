@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+<%- include('../../partials/header.ejs') %>
+<body>
+<%- include('../../partials/navbar/article.ejs') %>
+<% if (prop) { %>
+    <h2><%= prop.title %></h2>
+    <h4><%= prop.subheading %></h4>
+    <p><%- prop.content %></p>
+<% } %>
+<%- include('../../partials/footer.ejs') %>
+</body>
+</html>
