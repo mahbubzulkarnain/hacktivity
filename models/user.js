@@ -34,7 +34,17 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
         },
-        password: DataTypes.STRING,
+        password: {
+            type: DataTypes.STRING,
+            validate: {
+                notNull() {
+                    if (value && value.length < 6 || !value) {
+                        next(`Min 6 character password`)
+                    }
+                    next()
+                }
+            }
+        },
         salt: DataTypes.STRING,
         fbToken: DataTypes.STRING,
         usedToken2FA: DataTypes.STRING,
@@ -43,8 +53,10 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         hooks: {
             afterValidate(user, opt) {
-                user.salt = bcrypt.genSaltSync(6);
-                user.password = bcrypt.hashSync(user.password, user.salt);
+                if (!user.salt) {
+                    user.salt = bcrypt.genSaltSync(6);
+                    user.password = bcrypt.hashSync(user.password, user.salt);
+                }
             }
         }
     });
