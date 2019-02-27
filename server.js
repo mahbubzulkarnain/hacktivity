@@ -4,12 +4,16 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 const compression = require('compression');
 
+const validator = require('express-validator');
+
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const passport = require('passport');
 
 const helmet = require('helmet');
 const csp = require('express-csp-header');
+
+const logger = require('morgan');
 
 app
     .use(express.static(path.join(__dirname, 'public')))
@@ -34,11 +38,15 @@ app
     }))
     .use(passport.initialize())
     .use(passport.session())
+    .use(validator({customValidators: {}}))
+    .use(require('./middlewares/app'))
+    .use(logger('dev'))
     .use(compression());
 
 app
-    .use('/', require('./routes/auth'))
-    .get('/', (req, res) => res.render('pages/index'));
+    .use('/article', require('./routes/article'))
+    .get('/', (req, res) => res.render('pages/index'))
+    .use('/', require('./routes/auth'));
 
 app
     .listen(PORT, () => console.log(`Listening on ${PORT}`));

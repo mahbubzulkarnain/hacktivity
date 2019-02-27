@@ -2,6 +2,29 @@
 <html lang="en">
 <%- include('../../partials/header.ejs') %>
 <body>
-
+<form method="post">
+    <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" name="firstName" id="firstName">
+    </div>
+    <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" name="lastName" id="lastName">
+    </div>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email">
+    </div>
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username">
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" autocomplete="off">
+    </div>
+    <button type="submit" class="btn btn-success">Register</button>
+</form>
+<%- include('../../partials/footer.ejs') %>
 </body>
 </html>
