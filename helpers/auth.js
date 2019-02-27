@@ -18,5 +18,6 @@ module.exports = {
             id: user.id,
             salt: user.salt
         };
+
     }
 };

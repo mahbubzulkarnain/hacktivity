@@ -1,18 +1,21 @@
 const router = require('express').Router();
-const {isNotLogin, isLogin} = require('../helpers/auth');
+const {isLogin} = require('../helpers/auth');
 const Article = require('../controllers/ArticleController');
 
 
 router
-    .get('/', Article.list)
-    .get('/destroy/:id', Article.destroy);
+    .get('/view/:slug', Article.view)
+    .get('/destroy/:id', isLogin, Article.destroy);
 
 router
-    .get('/create', Article.createForm)
-    .post('/create', Article.createPost);
+    .get('/create', isLogin, Article.createForm)
+    .post('/create', isLogin, Article.createPost);
 
 router
-    .get('/edit/:id', Article.updateForm)
-    .post('/edit/:id', Article.updatePost);
+    .get('/edit/:id', isLogin, Article.updateForm)
+    .post('/edit/:id', isLogin, Article.updatePost);
+
+router
+    .get('/', Article.list);
 
 module.exports = router;

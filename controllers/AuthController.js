@@ -43,12 +43,13 @@ class AuthController {
     static loginPost(req, res, next) {
         const {body} = req;
         User.findOne({
-            username: body.username
+            where: {
+                username: body.username
+            }
         })
             .then((user) => {
                 if (user) {
                     bcrypt.compare(body.password, user.password, (err, success) => {
-                        console.log(body.password, user.password, success, 'tidak ada error');
                         if (success) {
                             setLogin(req, user);
                             res.redirect('/')
@@ -64,14 +65,17 @@ class AuthController {
     }
 
     static logout(req, res, next) {
-        if (req.session) {
-            req.session.destroy((err) => {
-                if (err) {
-                    next(err)
-                }
-                res.redirect('/')
-            })
+        try {
+            req.logout();
+        } catch (e) {
+            console.error('error', e);
         }
+        try {
+            req.session.destroy();
+        } catch (e) {
+            console.error('error', e);
+        }
+        res.redirect('/');
     }
 
     static facebookCallback(req, res, next) {
@@ -94,13 +98,14 @@ class AuthController {
                     if (user) {
                         res.locals.isLogin = true;
                         res.locals.user = {
+                            id: user.id,
                             firstName: user.firstName,
                             lastName: user.lastName,
                             username: user.username
                         }
                     } else {
                         res.locals.isLogin = false;
-                        res.locals.user = null
+                        res.locals.user = null;
                     }
                     next();
                 })
@@ -111,11 +116,13 @@ class AuthController {
                     }
                     res.locals.isLogin = false;
                     res.locals.user = null;
+                    req.session.user = {};
                     next();
                 })
         } else {
             res.locals.isLogin = false;
             res.locals.user = null;
+            req.session.user = {};
             next()
         }
     }

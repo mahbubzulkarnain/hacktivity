@@ -20,6 +20,7 @@ app
     .use(express.json())
     .use(express.urlencoded({extended: true}))
     .use('/bs', express.static(path.join(__dirname + '/node_modules/bootstrap/dist')))
+    .use('/mde', express.static(path.join(__dirname + '/node_modules/simplemde/dist')))
     .set('views', path.join(__dirname, 'views'))
     .set('view engine', 'ejs');
 
