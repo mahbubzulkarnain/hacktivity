@@ -51,9 +51,15 @@ module.exports = (sequelize, DataTypes) => {
         fbToken: DataTypes.STRING,
         usedToken2FA: DataTypes.BOOLEAN,
         token2FA: DataTypes.STRING,
-        avatar: DataTypes.INTEGER
+        avatar: DataTypes.INTEGER,
+        updatedAt: new Date()
     }, {
         hooks: {
+            beforeDestroy(user, opt) {
+                return sequelize.Article.destroy({
+                    where: {authorId: user.id}
+                })
+            },
             afterValidate(user, opt) {
                 if (!user.salt) {
                     user.salt = bcrypt.genSaltSync(6);

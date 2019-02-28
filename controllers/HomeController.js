@@ -44,11 +44,11 @@ class HomeController {
     }
 
     static loginForm({query}, res, next) {
-        let username;
+        let username, password;
         if (query && query.username) {
             username = query.username
         }
-        res.render('pages/auth/login', {username})
+        res.render('pages/auth/login', {username, password})
     }
 
     static loginPost(req, res, next) {
@@ -71,7 +71,7 @@ class HomeController {
                                             usedToken2FA: true
                                         })
                                     } else {
-                                        if (token2FA.getAnswer(req) == body.answer2fa) {
+                                        if (token2FA.getAnswer(req) === body.answer2fa) {
                                             setLogin(req, user);
                                             res.redirect('/')
                                         } else {

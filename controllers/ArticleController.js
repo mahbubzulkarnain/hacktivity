@@ -1,5 +1,5 @@
 const marked = require('marked');
-const {Article} = require('../models');
+const {Article, Tags, TagsArticles} = require('../models');
 
 class ArticleController {
     static list(req, res, next) {
@@ -25,6 +25,41 @@ class ArticleController {
             content: body.content,
             authorId: res.locals.user.id
         })
+            .then((article) => {
+                if (body.tags) {
+                    // return res.json(body.tags);
+                    let tags = body.tags.split(',');
+                    return Promise.all(tags.map(async item => {
+                        try {
+                            item = item.replace(/^\s+|\s+$/gi, '').replace(/[^\w]/gi, '');
+                            if (item) {
+                                let tag = await Tags.findOne({where: {name: item}});
+                                if (!tag || !tag.id) {
+                                    tag = await Tags.create({
+                                        name: item
+                                    })
+                                }
+                                let tagArticle = await TagsArticles.findOne({
+                                    where: {
+                                        tagId: tag.id,
+                                        articleId: article.id
+                                    }
+                                });
+                                if (!tagArticle || !tagArticle.id) {
+                                    tagArticle = await TagsArticles.create({
+                                        articleId: article.id,
+                                        tagId: tag.id
+                                    })
+                                }
+                            }
+                        } catch (e) {
+                            console.log(e)
+                        }
+                    }))
+                } else {
+                    res.redirect('/article')
+                }
+            })
             .then(() => {
                 res.redirect('/article')
             })
@@ -34,8 +69,7 @@ class ArticleController {
     static updateForm({params}, res, next) {
         Article.findOne({
             where: {
-                slug: params.slug,
-                authorId: res.locals.user.id
+                slug: params.slug
             }
         })
             .then((prop) => {
@@ -72,7 +106,7 @@ class ArticleController {
             }
         })
             .then((prop) => {
-                // res.json(prop)
+                // return res.json(prop)
                 if (prop) {
                     res.render('pages/article/view', {prop})
                 } else {

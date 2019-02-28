@@ -1,0 +1,10 @@
+<script type="text/javascript">
+    var printContentParam = function (input) {
+        let label = (input.split(':')[0]);
+        contentparam = contentparam.filter(data => data.label !== label);
+        contentparam.push({label: label, value: input});
+        return contentparam;
+    };
+    var contentparam = [];
+
+</script>

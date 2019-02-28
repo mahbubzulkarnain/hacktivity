@@ -20,9 +20,15 @@ module.exports = (sequelize, DataTypes) => {
         slug: DataTypes.STRING,
         thumbhnail: DataTypes.STRING,
         authorId: DataTypes.INTEGER,
-        content: DataTypes.TEXT
+        content: DataTypes.TEXT,
+        updatedAt: new Date()
     }, {
         hooks: {
+            beforeDestroy(article, opt) {
+                return sequelize.TagsArticles.destroy({
+                    where: {articleId: article.id}
+                })
+            },
             afterValidate(article, opt) {
                 if (!article.slug) {
                     article.slug = article.title.replace(/\s+/g, '_').replace(/[^\w]/gi, '').toLowerCase() + '_' + (new Date().getTime() + '').slice(-8)
@@ -42,7 +48,8 @@ module.exports = (sequelize, DataTypes) => {
     });
     Article.associate = function (models) {
         // associations can be defined here
-        Article.belongsTo(models.User, {foreignKey: 'authorId'})
+        Article.belongsTo(models.User, {foreignKey: 'authorId'});
+        Article.belongsToMany(sequelize.models.Tags, {through: sequelize.models.TagsArticles, foreignKey: 'articleId'})
     };
 
     Article.prototype.getTimeAgo = function () {
