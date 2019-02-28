@@ -38,6 +38,7 @@ section {
     height: 100%;
     display: block;
     overflow: hidden;
+    margin: 0 auto;
 }
 
 .avatar-auto {

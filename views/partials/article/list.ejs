@@ -2,9 +2,12 @@
     <div class="card" style="margin-bottom: 10px">
         <div class="row no-gutters">
             <div class="col-12">
-                <a href="/article/view/<%= item.slug %>" style="max-height: 200px;color:black;overflow: hidden;display: block;">
-                    <img class="card-img-top" src="<%= item.getImageLink() %>" alt="<%= item.title %>"/>
-                </a>
+                <% if(item.getImageLink()){ %>
+                    <a href="/article/view/<%= item.slug %>"
+                       style="max-height: 200px;color:black;overflow: hidden;display: block;">
+                        <img class="card-img-top" src="<%= item.getImageLink() %>" alt="<%= item.title %>"/>
+                    </a>
+                <% } %>
                 <div class="card-body">
                     <a href="/article/view/<%= item.slug %>" style="color:black;">
                         <h3 class="card-title"><%= item.title %></h3>
