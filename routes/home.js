@@ -21,6 +21,6 @@ router
     .get('/login', isNotLogin, Home.loginForm);
 
 router
-    .get('/', (req, res) => res.render('pages/index'));
+    .get('/', Home.index);
 
 module.exports = router;

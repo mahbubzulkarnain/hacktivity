@@ -8,6 +8,8 @@ a {
 	color:#00ab6b;
 }
 a,a:hover {
+	text-decoration: none;
+	color:#00ab6b;
 	transition:all 0.2s;
 }
 .mediumnavigation {

@@ -1,21 +1,22 @@
 <% if (props && props.length > 0) { props.forEach(item=>{ %>
-    <a href="/article/view/<%= item.slug %>" style="color:black;">
-        <div class="card" style="margin-bottom: 10px">
-            <div class="row no-gutters">
-                <div class="col-8">
-                    <div class="card-body">
+    <div class="card" style="margin-bottom: 10px">
+        <div class="row no-gutters">
+            <div class="col-12">
+                <div class="card-body">
+                    <a href="/article/view/<%= item.slug %>" style="color:black;">
                         <h3 class="card-title"><%= item.title %></h3>
                         <h6 class="card-subtitle"><%= item.subheading %></h6>
-                        <p><%- item.content %></p>
-                        <small><%= item.getTimeAgo() %></small>
-                        /
-                        <small style="font-weight: bold"><%= item.User.firstName + ' ' + item.User.lastName %></small>
-                    </div>
-                </div>
-                <div class="col-4">
-
+                        <p><%- item.getContentItemList() %></p>
+                    </a>
+                    <small><%= item.getTimeAgo() %></small>
+                    /
+                    <% if(item.User){ %>
+                        <a href="/@<%= item.User.username %>">
+                            <small style="font-weight: bold"><%= item.User.fullname() %></small>
+                        </a>
+                    <% } %>
                 </div>
             </div>
         </div>
-    </a>
+    </div>
 <% })} %>

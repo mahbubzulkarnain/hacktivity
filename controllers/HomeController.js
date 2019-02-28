@@ -1,14 +1,27 @@
-const {User} = require('../models');
+const {User, Article} = require('../models');
 const {setLogin} = require('../helpers/auth');
 const url = require('url');
 const bcrypt = require('bcrypt');
+const marked = require('marked');
 
 class HomeController {
+    static index(req, res, next) {
+        Article.scope('withDBAuthor').findAll({
+            order: [
+                ['createdAt', 'DESC']
+            ]
+        })
+            .then((props) => {
+                res.render('pages/index', {props})
+            })
+            .catch(next)
+    }
+
     static registerForm(req, res) {
         res.render('pages/auth/register')
     }
 
-    static registerPost({body}, res) {
+    static registerPost({body}, res, next) {
         res.locals.body = body;
         User.create({
             firstName: body.firstName,
@@ -25,11 +38,7 @@ class HomeController {
                     }
                 }))
             })
-            .catch((err) => {
-                if (err) {
-                    console.log(err)
-                }
-            })
+            .catch(next)
     }
 
     static loginForm({query}, res, next) {

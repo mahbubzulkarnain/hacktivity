@@ -1,9 +1,21 @@
 'use strict';
 const formatDate = require('../helpers/date');
 const timeAgo = require('../helpers/timeAgo');
+const subString = require('../helpers/subString');
+const marked = require('marked');
 module.exports = (sequelize, DataTypes) => {
     const Article = sequelize.define('Article', {
-        title: DataTypes.STRING,
+        title: {
+            type: DataTypes.STRING,
+            validate: {
+                notNull(value, next) {
+                    if (value && value < 1 || !value) {
+                        next(`Value cannot null`)
+                    }
+                    next()
+                }
+            }
+        },
         subheading: DataTypes.STRING,
         slug: DataTypes.STRING,
         thumbhnail: DataTypes.STRING,
@@ -39,6 +51,12 @@ module.exports = (sequelize, DataTypes) => {
 
     Article.prototype.getCreatedDate = function () {
         return formatDate(this.createdAt)
+    };
+    Article.prototype.getContentItemList = function () {
+        return marked(subString(this.content))
+    };
+    Article.prototype.getContentParsed = function () {
+        return marked(this.content)
     };
     return Article;
 };

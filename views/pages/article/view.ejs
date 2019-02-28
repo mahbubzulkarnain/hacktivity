@@ -13,8 +13,16 @@
     <div>
         <% if (prop) { %>
             <h1><%= prop.title %></h1>
-            <h4><%= prop.subheading %></h4>
-            <p><%- prop.content %></p>
+            <h5 class="text-muted"><%= prop.subheading %></h5>
+            <p><%- prop.getContentParsed() %></p>
+            <% if(prop.User ) { %>
+                <div class="pt-5">
+                    <a href="/@<%= prop.User.username %>">
+                        <h6><%= prop.User.fullname() %></h6>
+                    </a>
+                    <small><%= prop.getTimeAgo() %></small>
+                </div>
+            <% } %>
         <% } %>
     </div>
 </div>

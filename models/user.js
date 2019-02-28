@@ -1,9 +1,11 @@
 'use strict';
 const bcrypt = require('bcrypt');
+const marked = require('marked');
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         firstName: DataTypes.STRING,
         lastName: DataTypes.STRING,
+        bio: DataTypes.STRING,
         email: {
             type: DataTypes.STRING,
             validate: {
@@ -37,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
         password: {
             type: DataTypes.STRING,
             validate: {
-                notNull() {
+                notNull(value, next) {
                     if (value && value.length < 6 || !value) {
                         next(`Min 6 character password`)
                     }
@@ -65,6 +67,9 @@ module.exports = (sequelize, DataTypes) => {
     };
     User.prototype.fullname = function () {
         return this.firstName + ' ' + this.lastName;
+    };
+    User.prototype.getBioParsed = function () {
+        return marked(this.bio || '')
     };
     return User;
 };

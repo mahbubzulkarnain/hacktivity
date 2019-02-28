@@ -9,9 +9,6 @@ class ArticleController {
             ]
         })
             .then((props) => {
-                props.map(item => {
-                    item.content = marked(item.content.substring(0, 200) + '...')
-                });
                 res.render('pages/article/list', {props})
             })
             .catch(next)
@@ -69,14 +66,14 @@ class ArticleController {
     }
 
     static view({params}, res, next) {
-        Article.findOne({
+        Article.scope('withDBAuthor').findOne({
             where: {
                 slug: params.slug
             }
         })
             .then((prop) => {
+                // res.json(prop)
                 if (prop) {
-                    prop.content = marked(prop.content);
                     res.render('pages/article/view', {prop})
                 } else {
                     res.redirect('/article')
