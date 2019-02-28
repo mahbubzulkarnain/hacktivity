@@ -1,8 +1,10 @@
 'use strict';
+const marked = require('marked');
+const fs = require('fs');
+
 const formatDate = require('../helpers/date');
 const timeAgo = require('../helpers/timeAgo');
 const subString = require('../helpers/subString');
-const marked = require('marked');
 module.exports = (sequelize, DataTypes) => {
     const Article = sequelize.define('Article', {
         title: {
@@ -25,7 +27,12 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         hooks: {
             beforeDestroy(article, opt) {
-                return sequelize.TagsArticles.destroy({
+                try {
+                    fs.unlinkSync(article.thumbhnail);
+                } catch (e) {
+                    console.log(e)
+                }
+                return sequelize.models.TagsArticles.destroy({
                     where: {articleId: article.id}
                 })
             },
@@ -51,7 +58,9 @@ module.exports = (sequelize, DataTypes) => {
         Article.belongsTo(models.User, {foreignKey: 'authorId'});
         Article.belongsToMany(sequelize.models.Tags, {through: sequelize.models.TagsArticles, foreignKey: 'articleId'})
     };
-
+    Article.prototype.getImageLink = function () {
+        return this.thumbhnail.replace(/^\s+/g, '').replace(/^public/g, '');
+    };
     Article.prototype.getTimeAgo = function () {
         return timeAgo(this.createdAt)
     };

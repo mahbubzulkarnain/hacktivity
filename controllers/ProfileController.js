@@ -32,7 +32,7 @@ class ProfileController {
                 qrCode2FA(res, user, (formattedKey, qtimg) => {
                     req.session.token_question = formattedKey;
                     res.render('pages/profile/setting', {
-                        user,
+                        prop: user,
                         qtimg,
                     })
                 });
@@ -52,6 +52,11 @@ class ProfileController {
                 if (body.password && false) {
                     Object.assign(updateDate, {
                         password: body.password
+                    })
+                }
+                if (req.files && req.files[0]) {
+                    Object.assign(updateDate, {
+                        avatar: req.files[0].path
                     })
                 }
                 if ((body.usedToken2FA === 'on') !== user.usedToken2FA && token2FA.getAnswer(req) === body.answer2fa) {

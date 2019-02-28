@@ -5,7 +5,12 @@
 <div class="container">
     <%- include('../../partials/navbar.ejs') %>
     <div class="row">
-        <div class="col-8 offset-2">
+        <div class="col-2 offset-1">
+            <div class="wrapper-avatar-auto rounded-circle">
+                <img src="<%= profile.getAvatarLink() %>" class="avatar-auto">
+            </div>
+        </div>
+        <div class="col-6">
             <h2><%= profile.fullname() %></h2>
             <p><%- profile.getBioParsed() %></p>
         </div>

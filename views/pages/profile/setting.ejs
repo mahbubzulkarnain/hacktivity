@@ -5,26 +5,34 @@
 <div class="container">
     <%- include('../../partials/navbar.ejs') %>
     <div class="row">
-        <form class="col-8 offset-2" method="post">
+        <form class="col-8 offset-2" method="post" enctype="multipart/form-data">
+            <div class="col-4 offset-4">
+                <div class="wrapper-avatar-auto rounded-circle">
+                    <img src="<%= prop.getAvatarLink() %>" id="imgAvatar" class="avatar-auto"
+                         onclick="(function () {document.getElementById('inputAvatar').click();})()" alt="<%= prop.fullname() %>">
+                    <input id="inputAvatar" name="image" type="file" multiple="multiple"
+                           accept='image/jpg, image/jpeg, image/png' style="display: none;" onchange="readURL(this)">
+                </div>
+            </div>
             <div class="form-group">
                 <label for="firstName">First Name</label>
-                <input type="text" name="firstName" id="firstName" class="input-group" value="<%= user.firstName %>">
+                <input type="text" name="firstName" id="firstName" class="input-group" value="<%= prop.firstName %>">
             </div>
             <div class="form-group">
                 <label for="lastName">Last Name</label>
-                <input type="text" name="lastName" id="lastName" class="input-group" value="<%= user.lastName %>">
+                <input type="text" name="lastName" id="lastName" class="input-group" value="<%= prop.lastName %>">
             </div>
             <div class="form-group form-check">
                 <input type="checkbox" class="form-check-input" name="usedToken2FA" id="usedToken2FA"
                        onchange="changeCheck2FA()"
-                        <%= user.usedToken2FA ? 'checked' : '' %>
+                        <%= prop.usedToken2FA ? 'checked' : '' %>
                 >
                 <label class="form-check-label" for="usedToken2FA">Enable 2 Factory Authenticate</label>
             </div>
             <div class="form-group" id="enabled2fa"></div>
             <div class="form-group">
                 <label for="bio">Bio</label>
-                <textarea class="input-group" name="bio" id="bio"><%= user.bio %></textarea>
+                <textarea class="input-group" name="bio" id="bio"><%= prop.bio %></textarea>
             </div>
             <hr>
             <div class="form-group">
@@ -55,7 +63,7 @@
         let checkBox = document.getElementById("usedToken2FA");
         let enabled2fa = document.getElementById("enabled2fa");
         if (checkBox.checked) {
-            <% if(user.usedToken2FA){ %>
+            <% if(prop.usedToken2FA){ %>
             enabled2fa.innerHTML = "";
             <% }else{ %>
             enabled2fa.innerHTML = `<div>
@@ -65,7 +73,7 @@
             </div>`;
             <% } %>
         } else {
-            <% if(user.usedToken2FA){ %>
+            <% if(prop.usedToken2FA){ %>
             enabled2fa.innerHTML = `<div>
                 <center><img src='<%= qtimg %>' ></center>
                 <label for='answer2fa'>Code from your handphone</label>
@@ -74,6 +82,16 @@
             <% }else{ %>
             enabled2fa.innerHTML = "";
             <% } %>
+        }
+    }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('imgAvatar').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
         }
     }
 </script>

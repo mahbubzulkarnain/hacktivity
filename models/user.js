@@ -1,6 +1,7 @@
 'use strict';
 const bcrypt = require('bcrypt');
 const marked = require('marked');
+const fs = require('fs');
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         firstName: DataTypes.STRING,
@@ -51,12 +52,17 @@ module.exports = (sequelize, DataTypes) => {
         fbToken: DataTypes.STRING,
         usedToken2FA: DataTypes.BOOLEAN,
         token2FA: DataTypes.STRING,
-        avatar: DataTypes.INTEGER,
+        avatar: DataTypes.STRING,
         updatedAt: new Date()
     }, {
         hooks: {
             beforeDestroy(user, opt) {
-                return sequelize.Article.destroy({
+                try {
+                    fs.unlinkSync('public/uploads/images/' + user.id + '/');
+                } catch (e) {
+                    console.log(e)
+                }
+                return sequelize.models.Article.destroy({
                     where: {authorId: user.id}
                 })
             },
@@ -76,6 +82,14 @@ module.exports = (sequelize, DataTypes) => {
     };
     User.prototype.getBioParsed = function () {
         return marked(this.bio || '')
+    };
+    User.prototype.getAvatarLink = function () {
+        if (this.avatar) {
+            return this.avatar.replace(/^\s+/g, '').replace(/^public/g, '') + '?v=' + (new Date(this.updatedAt).getTime() + '').substring(-8);
+        } else {
+            return ''
+        }
+
     };
     return User;
 };

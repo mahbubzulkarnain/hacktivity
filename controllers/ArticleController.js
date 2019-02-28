@@ -1,4 +1,5 @@
 const marked = require('marked');
+const fs = require('fs');
 const {Article, Tags, TagsArticles} = require('../models');
 
 class ArticleController {
@@ -18,12 +19,18 @@ class ArticleController {
         res.render('pages/article/create')
     }
 
-    static createPost({body}, res, next) {
+    static createPost(req, res, next) {
+        const {body} = req;
+        let path = '';
+        if (req.files && req.files[0]) {
+            path = req.files[0].path
+        }
         Article.create({
             title: body.title,
             subheading: body.subheading,
             content: body.content,
-            authorId: res.locals.user.id
+            authorId: res.locals.user.id,
+            thumbhnail: path
         })
             .then((article) => {
                 if (body.tags) {
@@ -79,7 +86,8 @@ class ArticleController {
             .catch(next)
     }
 
-    static updatePost({params, body}, res, next) {
+    static updatePost(req, res, next) {
+        const {params, body} = req;
         Article.findOne({
             where: {
                 slug: params.slug,
@@ -87,11 +95,22 @@ class ArticleController {
             }
         })
             .then((article) => {
-                return article.update({
+                let update = {
                     title: body.title,
                     subheading: body.subheading,
                     content: body.content,
-                })
+                };
+                if (req.files && req.files[0]) {
+                    try {
+                        fs.unlinkSync(article.thumbhnail);
+                    } catch (e) {
+                        console.log(e)
+                    }
+                    Object.assign(update, {
+                        thumbhnail: req.files[0].path
+                    })
+                }
+                return article.update(update)
             })
             .then(() => {
                 res.redirect(`/article/view/${params.slug}`)

@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         hooks: {
             beforeDestroy(tag, opt) {
-                return sequelize.TagsArticles.destroy({
+                return sequelize.models.TagsArticles.destroy({
                     where: {tagId: tag.id}
                 })
             },

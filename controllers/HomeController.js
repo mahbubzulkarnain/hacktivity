@@ -138,7 +138,8 @@ class HomeController {
                             firstName: user.firstName,
                             lastName: user.lastName,
                             username: user.username,
-                            usedToken2FA: user.usedToken2FA
+                            usedToken2FA: user.usedToken2FA,
+                            avatar: user.getAvatarLink()
                         }
                     } else {
                         res.locals.isLogin = false;

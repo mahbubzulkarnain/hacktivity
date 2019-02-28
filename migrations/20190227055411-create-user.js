@@ -48,7 +48,7 @@ module.exports = {
                 type: Sequelize.STRING
             },
             avatar: {
-                type: Sequelize.INTEGER
+                type: Sequelize.STRING
             },
             createdAt: {
                 allowNull: false,

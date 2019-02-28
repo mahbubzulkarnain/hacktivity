@@ -13,6 +13,9 @@
     <% } %>
     <div>
         <% if (prop) { %>
+            <div>
+                <img src="<%= prop.getImageLink() %>" class="img-fluid" alt="<%= prop.title %>">
+            </div>
             <h1><%= prop.title %></h1>
             <h5 class="text-muted"><%= prop.subheading %></h5>
             <p><%- prop.getContentParsed() %></p>
