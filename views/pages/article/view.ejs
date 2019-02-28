@@ -15,7 +15,8 @@
         <% if (prop) { %>
             <% if(prop.getImageLink()){ %>
                 <div>
-                    <img src="<%= prop.getImageLink() %>" class="img-fluid" alt="<%= prop.title %>" style="margin: 0 auto;display: block;">
+                    <img src="<%= prop.getImageLink() %>" class="img-fluid" alt="<%= prop.title %>"
+                         style="margin: 0 auto;display: block;">
                 </div>
             <% } %>
             <h1><%= prop.title %></h1>
@@ -28,18 +29,37 @@
                 <% })} %>
             </div>
             <% if(prop.User ) { %>
-                <div>
-                    <a href="/@<%= prop.User.username %>">
-                        <h6><%= prop.User.fullname() %></h6>
-                    </a>
-                    <small><%= prop.getTimeAgo() %></small>
+                <div class="row">
+                    <div class="col-2 col-md-1">
+                        <a href="/@<%= prop.User.username %>">
+                            <div class="wrapper-avatar-auto rounded-circle">
+                                <img class="avatar-auto" src="<%= prop.User.getAvatarLink() %>">
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="/@<%= prop.User.username %>">
+                            <h6><%= prop.User.fullname() %></h6>
+                        </a>
+                        <small><%= prop.getTimeAgo() %></small>
+                    </div>
                 </div>
             <% } %>
         <% } %>
     </div>
+    <% if (user){ %>
+        <!--<hr>-->
+        <!--<div id="contentcomments"></div>-->
+    <% } %>
 </div>
 <%- include('../../partials/footer.ejs') %>
+<%- include('../../partials/vendor/jqueryUi.ejs') %>
 <%- include('../../partials/vendor/fontawesome.ejs') %>
+<% if (user){ %>
+    <%- include('../../partials/vendor/jqueryTextComplete.ejs') %>
+    <%- include('../../partials/vendor/jqueryComments.ejs') %>
+    <%- include('../../partials/vendor/jqueryCommentsScript.ejs') %>
+<% } %>
 
 <script src="/swal/sweetalert.min.js"></script>
 <script type="text/javascript">
