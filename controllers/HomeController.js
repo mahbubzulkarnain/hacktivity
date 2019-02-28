@@ -63,6 +63,7 @@ class HomeController {
                     bcrypt.compare(body.password, user.password, (err, success) => {
                         if (success) {
                             qrCode2FA(res, user, (formattedKey) => {
+                                req.session.token_question = formattedKey;
                                 if (user.usedToken2FA) {
                                     if (!body.answer2fa) {
                                         res.render('pages/auth/login', {
@@ -128,6 +129,7 @@ class HomeController {
     }
 
     static checkLoginMiddleware(req, res, next) {
+        res.locals.webname = req.app.locals.webname;
         res.locals.usedToken2FA = false;
         if (req.session && req.session.user && req.session.user.id) {
             User.findByPk(req.session.user.id)

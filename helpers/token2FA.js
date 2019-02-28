@@ -5,8 +5,9 @@ module.exports = {
         if (req instanceof String) {
             return authenticator.generateToken(req.replace(/ /g, ''));
         } else {
-            return authenticator.generateToken(req.session.token_question.replace(/ /g, ''));
+            if (req.session){
+                return authenticator.generateToken(req.session.token_question.replace(/ /g, ''));
+            }
         }
-
     },
 };
