@@ -22,7 +22,7 @@ module.exports = (passport) => {
     passport.use('facebook', new FacebookStrategy({
         clientID: "826259671068644",
         clientSecret: "583872ee78d62429320dc8278e7c47e8",
-        callbackURL: "/login/facebook/callback",
+        callbackURL: "https://hacktivityproject.herokuapp.com/login/facebook/callback",
         profileFields: ['id', 'email', 'name', 'displayName', 'picture.type(large)']
     }, async function (accessToken, refreshToken, profile, cb) {
         try {
