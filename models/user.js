@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         salt: DataTypes.STRING,
         fbToken: DataTypes.STRING,
-        usedToken2FA: DataTypes.STRING,
+        usedToken2FA: DataTypes.BOOLEAN,
         token2FA: DataTypes.STRING,
         avatar: DataTypes.INTEGER
     }, {

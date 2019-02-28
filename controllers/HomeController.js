@@ -1,5 +1,7 @@
 const {User, Article} = require('../models');
 const {setLogin} = require('../helpers/auth');
+const qrCode2FA = require('../helpers/qrCode2FA');
+const token2FA = require('../helpers/token2FA');
 const url = require('url');
 const bcrypt = require('bcrypt');
 const marked = require('marked');
@@ -42,7 +44,7 @@ class HomeController {
     }
 
     static loginForm({query}, res, next) {
-        let username
+        let username;
         if (query && query.username) {
             username = query.username
         }
@@ -60,8 +62,31 @@ class HomeController {
                 if (user) {
                     bcrypt.compare(body.password, user.password, (err, success) => {
                         if (success) {
-                            setLogin(req, user);
-                            res.redirect('/')
+                            qrCode2FA(res, user, (formattedKey) => {
+                                if (user.usedToken2FA) {
+                                    if (!body.answer2fa) {
+                                        res.render('pages/auth/login', {
+                                            username: body.username,
+                                            password: body.password,
+                                            usedToken2FA: true
+                                        })
+                                    } else {
+                                        if (token2FA.getAnswer(req) == body.answer2fa) {
+                                            setLogin(req, user);
+                                            res.redirect('/')
+                                        } else {
+                                            res.render('pages/auth/login', {
+                                                username: body.username,
+                                                password: body.password,
+                                                usedToken2FA: true
+                                            })
+                                        }
+                                    }
+                                } else {
+                                    setLogin(req, user);
+                                    res.redirect('/')
+                                }
+                            });
                         } else {
                             next(err)
                         }
@@ -101,6 +126,7 @@ class HomeController {
     }
 
     static checkLoginMiddleware(req, res, next) {
+        res.locals.usedToken2FA = false;
         if (req.session && req.session.user && req.session.user.id) {
             User.findByPk(req.session.user.id)
                 .then((user) => {
@@ -111,7 +137,8 @@ class HomeController {
                             fullName: user.fullname(),
                             firstName: user.firstName,
                             lastName: user.lastName,
-                            username: user.username
+                            username: user.username,
+                            usedToken2FA: user.usedToken2FA
                         }
                     } else {
                         res.locals.isLogin = false;

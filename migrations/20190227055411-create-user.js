@@ -40,7 +40,7 @@ module.exports = {
                 type: Sequelize.STRING
             },
             usedToken2FA: {
-                type: Sequelize.STRING,
+                type: Sequelize.BOOLEAN,
                 defaultValue: false
             },
             token2FA: {

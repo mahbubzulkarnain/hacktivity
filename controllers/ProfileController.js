@@ -1,4 +1,5 @@
-const marked = require('marked');
+const qrCode2FA = require('../helpers/qrCode2FA');
+const token2FA = require('../helpers/token2FA');
 const {User, Article} = require('../models');
 
 class ProfileController {
@@ -28,12 +29,19 @@ class ProfileController {
     static settingForm(req, res, next) {
         User.findByPk(res.locals.user.id)
             .then((user) => {
-                res.render('pages/profile/setting', {user})
+                qrCode2FA(res, user, (formattedKey, qtimg) => {
+                    req.session.token_question = formattedKey;
+                    res.render('pages/profile/setting', {
+                        user,
+                        qtimg,
+                    })
+                });
             })
             .catch(next)
     }
 
-    static settingPost({body}, res, next) {
+    static settingPost(req, res, next) {
+        const {body} = req;
         User.findByPk(res.locals.user.id)
             .then((user) => {
                 let updateDate = {
@@ -44,6 +52,12 @@ class ProfileController {
                 if (body.password && false) {
                     Object.assign(updateDate, {
                         password: body.password
+                    })
+                }
+                if ((body.usedToken2FA === 'on') !== user.usedToken2FA && token2FA.getAnswer(req) === body.answer2fa) {
+                    Object.assign(updateDate, {
+                        usedToken2FA: !user.usedToken2FA,
+                        token2FA: req.session.token_question
                     })
                 }
                 return user.update(updateDate)

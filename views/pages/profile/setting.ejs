@@ -14,6 +14,14 @@
                 <label for="lastName">Last Name</label>
                 <input type="text" name="lastName" id="lastName" class="input-group" value="<%= user.lastName %>">
             </div>
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" name="usedToken2FA" id="usedToken2FA"
+                       onchange="changeCheck2FA()"
+                        <%= user.usedToken2FA ? 'checked' : '' %>
+                >
+                <label class="form-check-label" for="usedToken2FA">Enable 2 Factory Authenticate</label>
+            </div>
+            <div class="form-group" id="enabled2fa"></div>
             <div class="form-group">
                 <label for="bio">Bio</label>
                 <textarea class="input-group" name="bio" id="bio"><%= user.bio %></textarea>
@@ -42,6 +50,32 @@
     simplemde.codemirror.on("change", function () {
         document.getElementById(`bio`).value = simplemde.value();
     })
+
+    function changeCheck2FA() {
+        let checkBox = document.getElementById("usedToken2FA");
+        let enabled2fa = document.getElementById("enabled2fa");
+        if (checkBox.checked) {
+            <% if(user.usedToken2FA){ %>
+            enabled2fa.innerHTML = "";
+            <% }else{ %>
+            enabled2fa.innerHTML = `<div>
+                <center><img src='<%= qtimg %>' ></center>
+                <label for='answer2fa'>Code from your handphone</label>
+                <input type='text' name='answer2fa' class='input-group'>
+            </div>`;
+            <% } %>
+        } else {
+            <% if(user.usedToken2FA){ %>
+            enabled2fa.innerHTML = `<div>
+                <center><img src='<%= qtimg %>' ></center>
+                <label for='answer2fa'>Code from your handphone</label>
+                <input type='text' name='answer2fa' class='input-group'>
+            </div>`;
+            <% }else{ %>
+            enabled2fa.innerHTML = "";
+            <% } %>
+        }
+    }
 </script>
 </body>
 </html>
