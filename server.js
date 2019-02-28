@@ -20,6 +20,7 @@ app
     .use(express.json())
     .use(express.urlencoded({extended: true}))
     .use('/bs', express.static(path.join(__dirname + '/node_modules/bootstrap/dist')))
+    .use('/fa', express.static(path.join(__dirname + '/node_modules/@fortawesome/fontawesome-free')))
     .use('/mde', express.static(path.join(__dirname + '/node_modules/simplemde/dist')))
     .use('/jq', express.static(path.join(__dirname + '/node_modules/jquery/dist')))
     .use('/swal', express.static(require('path').join(__dirname + '/node_modules/sweetalert/dist/')))
