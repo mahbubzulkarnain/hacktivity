@@ -1,0 +1,121 @@
+<script type="text/javascript">
+    let commentsid = $('#contentcomments');
+    commentsid.comments(Object.assign({
+        putComment: function (commentJSON, success, error) {
+            $.ajax({
+                type: 'post',
+                url: '/api/customer/program/#{program_url}/msg_to_content_edit/' + commentJSON.id + '?_csrf=' + csrf,
+                data: Object.assign(commentJSON, {'submission_id': submission_id}),
+                success: function (response) {
+                    if (response && response.id) {
+                        let data = {
+                            id: response.id,
+                            parent: (response.to && (response.to.length > 10) ? response.to.toString() : null),
+                            fullname: response.fullname,
+                            profile_picture_url: response.profile_picture_url,
+                            content: commentJSON.content,
+                            type_message: response.type_message,
+                            created: new Date(response.created),
+                            modified: new Date(commentJSON.modified),
+                            created_by_current_user: response.created_by_current_user
+                        };
+                        success(data);
+                    }
+                },
+                error: error
+            });
+        },
+        postComment: function (commentJSON, success, error) {
+            $.ajax({
+                type: 'post',
+                url: '/api/customer/program/#{program_url}/msg_to_content_create?_csrf=' + csrf,
+                data: Object.assign(commentJSON, {'submission_id': submission_id}),
+                success: function (response) {
+                    if (response && response.id) {
+                        let data = {
+                            id: response.id,
+                            parent: (response.to && (response.to.length > 10) ? response.to.toString() : null),
+                            fullname: response.fullname,
+                            profile_picture_url: response.profile_picture_url,
+                            content: response.content,
+                            type_message: response.type_message,
+                            created: new Date(response.created),
+                            created_by_current_user: response.created_by_current_user
+                        };
+                        socket.emit('input', Object.assign(data, {
+                            submission_id: submission_id
+                        }));
+
+                        success(data);
+                    }
+                },
+                error: error
+            });
+        },
+        refresh: function () {
+            commentsid.addClass('rendered');
+        },
+        getComments: function (success, error) {
+            $.ajax({
+                type: 'get',
+                url: '/api/customer/program/#{program_url}/msg_to_content/' + contentpagemsg + '/' + submission_id,
+                success: function (response) {
+                    let comment = [];
+                    if (response.data) {
+                        response.data.forEach(function (item, index, arr) {
+                            if (item) {
+                                let edited = {};
+                                let dateCreated = new Date(item.created_at);
+                                let dateModified = new Date(item.updated_at);
+                                if (dateCreated.setSeconds(dateCreated.getSeconds() + 1) < dateModified.setSeconds(dateModified.getSeconds())) {
+                                    Object.assign(edited, {
+                                        modified: new Date(item.updated_at)
+                                    })
+                                }
+                                comment.push(Object.assign({
+                                    id: item._id,
+                                    parent: (item.to && (item.to.length > 3) ? item.to.toString() : null),
+                                    fullname: strip_tags(item.author_full_name),
+                                    profile_picture_url: '/customer/profile/avatar/' + item.author_username,
+                                    content: item.message,
+                                    type_message: item.type_message,
+                                    created: new Date(item.created_at),
+                                    created_by_current_user: item.author_username === '#{user_username}'
+                                }, edited))
+                            }
+                        })
+                        success(comment);
+                    }
+
+                },
+                error: error
+            });
+        },
+        deleteComment: function (commentJSON, success, error) {
+            $.ajax({
+                type: 'get',
+                url: '/api/customer/program/#{program_url}/msg_to_content_delete/' + commentJSON.id + '?_csrf=' + csrf,
+                success: function (response) {
+                    success(response);
+                },
+                error: error
+            });
+        }
+    }, {
+        //option
+        // selectedCommentID: '#{item_comment_id}',
+        enableHashtags: true,
+        enableNavigation: false,
+        enablePinging: true,
+        forceResponsive: true,
+        postCommentOnEnter: true,
+        timeFormatter: function (time) {
+            return time_ago(time);
+        },
+
+        //user
+        currentUserIsAdmin: false,
+        profilePictureURL: "<%= user.avatar %>",
+        roundProfilePictures: true
+    }));
+</script>

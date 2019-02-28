@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<%- include('../../partials/header.ejs') %>
+<body>
+<div class="container">
+    <%- include('../../partials/navbar.ejs') %>
+    <div class="row pb-4">
+        <div class="col-2 offset-2">
+            <div class="wrapper-avatar-auto rounded-circle">
+                <img src="<%= profile.getAvatarLink() %>" class="avatar-auto">
+            </div>
+        </div>
+        <div class="col-6">
+            <h2><%= profile.fullname() %></h2>
+            <p><%- profile.getBioParsed() %></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8 offset-2">
+            <%- include('../../partials/article/list.ejs') %>
+        </div>
+    </div>
+</div>
+<%- include('../../partials/footer.ejs') %>
+<style type="text/css">
+    a:hover {
+        text-decoration: none;
+    }
+</style>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<% if (props && props.length > 0) { props.forEach(item=>{ %>
+    <div class="card" style="margin-bottom: 10px">
+        <div class="row no-gutters">
+            <div class="col-12">
+                <% if(item.getImageLink()){ %>
+                    <a href="/article/view/<%= item.slug %>"
+                       style="max-height: 200px;color:black;overflow: hidden;display: block;">
+                        <img class="card-img-top" src="<%= item.getImageLink() %>" alt="<%= item.title %>"/>
+                    </a>
+                <% } %>
+                <div class="card-body">
+                    <a href="/article/view/<%= item.slug %>" style="color:black;">
+                        <h3 class="card-title"><%= item.title %></h3>
+                        <h6 class="card-subtitle"><%= item.subheading %></h6>
+                        <p><%- item.getContentItemList() %></p>
+                    </a>
+                    <div class="pt-1 pb-2">
+                        <% if(item.Tags ) { item.Tags.forEach(tag=>{ %>
+                            <span class="badge badge-pill badge-light mr-3"><%= tag.name %></span>
+                        <% })} %>
+                    </div>
+                    <small><%= item.getTimeAgo() %></small>
+                    /
+                    <% if(item.User){ %>
+                        <a href="/@<%= item.User.username %>">
+                            <small style="font-weight: bold"><%= item.User.fullname() %></small>
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+<% })} %>

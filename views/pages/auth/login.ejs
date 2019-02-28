@@ -2,6 +2,33 @@
 <html lang="en">
 <%- include('../../partials/header.ejs') %>
 <body>
-
+<div class="container">
+    <div class="row">
+        <div class="col-6 offset-3">
+            <form method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" value="<%= username || '' %>" class="input-group">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" autocomplete="off"
+                           value="<%= password || '' %>" class="input-group">
+                </div>
+                <% if(usedToken2FA){ %>
+                    <div class="form-group">
+                        <label for='answer2fa'>Code from your handphone</label>
+                        <input type='text' name='answer2fa' class='input-group'>
+                    </div>
+                <% } %>
+                <button class="btn btn-success btn-block">Login</button>
+            </form>
+            <hr>
+            <a href="/login/facebook" class="btn btn-outline-primary btn-block mb-3">Facebook</a>
+            <a href="/register" class="btn btn-outline-dark btn-block">Register</a>
+        </div>
+    </div>
+</div>
+<%- include('../../partials/footer.ejs') %>
 </body>
 </html>

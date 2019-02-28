@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<%- include('../../partials/header.ejs') %>
+<body>
+<div class="container">
+    <%- include('../../partials/navbar.ejs') %>
+    <% if (prop && user && prop.authorId === user.id){ %>
+        <div class="float-right">
+            <a href="/article/edit/<%= prop.slug %>" class="p-2"><i class="fas fa-pencil-alt"></i></a>
+            <a onclick="swalClicked('<%= prop.slug %>')" class="text-danger p-2" style="color: white;"><i
+                        class="fas fa-trash-alt"></i></a>
+        </div>
+    <% } %>
+    <div>
+        <% if (prop) { %>
+            <% if(prop.getImageLink()){ %>
+                <div>
+                    <img src="<%= prop.getImageLink() %>" class="img-fluid" alt="<%= prop.title %>"
+                         style="margin: 0 auto;display: block;">
+                </div>
+            <% } %>
+            <h1><%= prop.title %></h1>
+            <h5 class="text-muted"><%= prop.subheading %></h5>
+            <p><%- prop.getContentParsed() %></p>
+
+            <div class="pt-4 pb-4">
+                <% if(prop.Tags ) { prop.Tags.forEach(tag=>{ %>
+                    <span class="badge badge-pill badge-light mr-3"><%= tag.name %></span>
+                <% })} %>
+            </div>
+            <% if(prop.User ) { %>
+                <div class="row">
+                    <div class="col-2 col-md-1">
+                        <a href="/@<%= prop.User.username %>">
+                            <div class="wrapper-avatar-auto rounded-circle">
+                                <img class="avatar-auto" src="<%= prop.User.getAvatarLink() %>">
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="/@<%= prop.User.username %>">
+                            <h6><%= prop.User.fullname() %></h6>
+                        </a>
+                        <small><%= prop.getTimeAgo() %></small>
+                    </div>
+                </div>
+            <% } %>
+        <% } %>
+    </div>
+    <% if (user){ %>
+        <!--<hr>-->
+        <!--<div id="contentcomments"></div>-->
+    <% } %>
+</div>
+<%- include('../../partials/footer.ejs') %>
+<%- include('../../partials/vendor/jqueryUi.ejs') %>
+<%- include('../../partials/vendor/fontawesome.ejs') %>
+<% if (user){ %>
+    <%- include('../../partials/vendor/jqueryTextComplete.ejs') %>
+    <%- include('../../partials/vendor/jqueryComments.ejs') %>
+    <%- include('../../partials/vendor/jqueryCommentsScript.ejs') %>
+<% } %>
+
+<script src="/swal/sweetalert.min.js"></script>
+<script type="text/javascript">
+    function swalClicked(id) {
+        swal('Are you sure ?', {
+            dangerMode: true,
+            buttons: ['Cancel', 'Delete'],
+        })
+            .then(function (yes) {
+                if (yes) {
+                    window.location = `/article/destroy/${id}`
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+</script>
+</body>
+</html>

@@ -62,3 +62,4 @@ typings/
 .idea/
 .sonarlint/
 package-lock.json
+public/uploads
