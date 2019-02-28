@@ -67,7 +67,10 @@ module.exports = (sequelize, DataTypes) => {
                 })
             },
             afterValidate(user, opt) {
-                if (!user.salt) {
+                if (user.username) {
+                    user.username = user.username.replace(/\s+/g, '').toLowerCase();
+                }
+                if (!user.salt && user.password) {
                     user.salt = bcrypt.genSaltSync(6);
                     user.password = bcrypt.hashSync(user.password, user.salt);
                 }
@@ -85,7 +88,11 @@ module.exports = (sequelize, DataTypes) => {
     };
     User.prototype.getAvatarLink = function () {
         if (this.avatar) {
-            return this.avatar.replace(/^\s+/g, '').replace(/^public/g, '') + '?v=' + (new Date(this.updatedAt).getTime() + '').substring(-8);
+            let version = '';
+            if (!this.fbToken) {
+                version = '?v=' + (new Date(this.updatedAt).getTime() + '').substring(-8);
+            }
+            return (this.avatar.replace(/^\s+/g, '').replace(/^public/g, '') + version).replace(/\s+/g, '');
         } else {
             return ''
         }

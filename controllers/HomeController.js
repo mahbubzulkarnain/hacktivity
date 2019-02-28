@@ -119,8 +119,10 @@ class HomeController {
         })
             .then((user) => {
                 if (user) {
-                    setLogin(req, user)
+                    setLogin(req, user);
+                    return res.redirect('/');
                 }
+                res.redirect('/login')
             })
             .catch(next)
     }
